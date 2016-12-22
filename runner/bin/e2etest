@@ -1,0 +1,88 @@
+#!/usr/bin/env ruby
+$stderr.sync=true
+require "bundler"
+
+require "capybara"
+require "capybara/dsl"
+require "capybara/poltergeist"
+
+Capybara.current_driver = :poltergeist
+
+class AssertError < RuntimeError
+end
+
+class TestScope
+  include Capybara::DSL
+
+  def assert!(condition)
+    if !condition
+      raise AssertError.new
+    end
+  end
+end
+
+class Result 
+  attr_reader :err, :file_name
+
+  def initialize(ok, file_name, err=nil)
+    @ok = ok
+    @file_name = file_name
+    @err = err
+  end
+
+  def passed?
+    @ok
+  end
+end
+
+def bold
+  "\033[1m" + yield + "\033[0m"
+end
+
+def underline
+  "\033[4m" + yield + "\033[0m"
+end
+
+def red
+  "\033[31m" + yield + "\033[0m"
+end
+
+def yellow
+  "\033[33m" + yield + "\033[0m"
+end
+
+def blue
+  "\033[34m" + yield + "\033[0m"
+end
+
+if ARGV.empty?
+  puts blue { "No tests provided" }
+  exit 0
+end
+
+results = []
+ARGV.each do |file_name|
+  $stderr.puts bold { blue { "Testing #{file_name}" } }
+  content = File.read(file_name)
+
+  begin
+    TestScope.new.instance_eval(content, file_name)
+    results.push Result.new(true, file_name)
+  rescue AssertError => err
+    results.push Result.new(false, file_name, err)
+  end
+end
+
+passed = results.select { |v| v.passed? }
+failed = results.reject { |v| v.passed? }
+
+if failed.length == 0
+  puts blue { underline { "All tests passed" } }
+else
+  puts red { underline { "#{passed.length} test(s) passed, #{failed.length} test(s) failed." } }
+  failed.each do |failed_test|
+    puts red { bold { underline { failed_test.file_name + ":" } } }
+    puts red { underline  { failed_test.err.message } }
+    puts red { failed_test.err.backtrace.join("\n") }
+  end
+end
