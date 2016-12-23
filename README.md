@@ -7,15 +7,19 @@ don't cause regressions.
 Futhermore, it can be used to verify that swapping out a service (lets say the `payment` service)
 by one implemented in a different language, that things still work as intended.
 
-## Building test runner
-The test runner can be build using `nix-build`, or via a Docker container.
+## How to run these tests
+By running the following command, all tests in [the tests directory](./tests/) will be run:
+```
+docker run --rm -e URL=<HOSTNAME> weaveworksdemos/e2etests
+```
 
-## Running tests
-1. Start the socks app with docker compose
-2. Run
+If you want to run only the `login` and `add_holy_to_cart` tests, run:
+```
+docker run --rm -e URL=<HOSTNAME> weaveworksdemos/e2etests login.rb add_holy_to_cart.rb
+```
+
+## Building test runner
+The test runner can be build using `nix-build`.
 ```
 URL=localhost $(nix-build)/bin/e2etest tests/add_holy_to_cart.rb test/checkout_holy.rb
 ```
-
-## TODO
-- [ ] Port runner to a Dockerfile
