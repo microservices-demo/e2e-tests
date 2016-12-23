@@ -15,4 +15,5 @@ click_link("1 item(s) in cart")
 # Start checkout
 click_link("1 item(s) in cart")
 
-assert! !page.has_content?("Shopping cart")
+assert! page.has_content?("My orders")
+assert! page.has_content?("Your orders in one place.")
