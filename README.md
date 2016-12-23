@@ -1,4 +1,5 @@
 # End-to-end tests for the Socks shop.
+[![Build Status](https://travis-ci.org/microservices-demo/e2e-tests.svg?branch=master)](https://travis-ci.org/microservices-demo/e2e-tests)
 
 This repo contains a a set of end-to-end tests, that we use to verify that changes to the shop
 don't cause regressions.
