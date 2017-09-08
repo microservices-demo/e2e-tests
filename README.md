@@ -10,6 +10,7 @@ by one implemented in a different language, that things still work as intended.
 ## How to run these tests
 By running the following command, all tests in [the tests directory](./tests/) will be run:
 ```
+docker build -t weaveworksdemos/e2etests .
 docker run --rm -e URL=<HOSTNAME> weaveworksdemos/e2etests
 ```
 
