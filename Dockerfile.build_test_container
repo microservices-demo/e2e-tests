@@ -1,0 +1,7 @@
+FROM nixos/nix:1.11
+CMD nix-build /e2etest -A e2etest-image
+COPY default.nix /e2etest/
+COPY runner/ /e2etest/runner
+COPY default.nix /e2etest/
+
+COPY tests /e2etest/tests
